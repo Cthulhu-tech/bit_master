@@ -1,7 +1,11 @@
+import { userPosition } from "./userPosition/userPosition";
 import { combineReducers, createStore } from "redux";
-import { updatePageInfo } from "./pageInfo/pageInfo";
+import { userValue } from "./useInput/userInput";
+import { pageInfo } from "./pageInfo/pageInfo";
 
 export const rootReducer = combineReducers({
-  updatePageInfo,
+  pageInfo,
+  userPosition,
+  userValue,
 });
 export const store = createStore(rootReducer);

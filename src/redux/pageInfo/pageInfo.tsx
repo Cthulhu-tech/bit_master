@@ -4,7 +4,7 @@ const defaultState: DataPageInfo = {};
 
 const update = "set_page_info";
 
-export const PageInfo = (
+export const pageInfo = (
   state = defaultState,
   action: IAction<string, DataPageInfo>
 ) => {
