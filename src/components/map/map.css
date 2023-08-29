@@ -1,0 +1,4 @@
+.map-container > div {
+  width: 100% !important;
+  height: calc(100% - 10em) !important;
+}
