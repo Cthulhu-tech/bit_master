@@ -9,11 +9,14 @@ export interface IStore {
   userValue: UserInput;
 }
 
-export type DataStartGeo = {
-  center: number[];
+export interface DataStartGeo extends DataPositionGeo {
   zoom: number;
   controls: string[];
-};
+}
+
+export interface DataPositionGeo {
+  center: number[];
+}
 
 export interface UserInput
   extends UserInputCurrentValue,

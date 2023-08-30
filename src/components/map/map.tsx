@@ -7,14 +7,15 @@ import ymaps from "yandex-maps";
 
 import "./map.css";
 
-import { updateUserCurrentValue } from "../../redux/useInput/userInput";
 import { ErrorType } from "./type";
+import { updateUserCurrentValue } from "../../redux/useInput/userInput";
+import { updateUserPosition } from "../../redux/userPosition/userPosition";
+
 const SearchDropDownMemo = memo(SearchDropDown);
 
 export const MapComponents = () => {
   const dispatch = useDispatch();
   const [ymapsValue, setYmaps] = useState<typeof ymaps>();
-  const [address, setAddress] = useState<DataStartGeo>();
   const userGeoPosition = useSelector<IStore, DataStartGeo>(
     (store) => store.userPosition
   );
@@ -23,13 +24,14 @@ export const MapComponents = () => {
 
   const onClickAddress = (e: any, api: typeof ymaps) => {
     const valueSearch = e.get("item").value;
-    console.log(valueSearch);
     dispatch(updateUserCurrentValue({ value: valueSearch }));
     api
       .geocode(valueSearch)
       .then((result: any) => {
-        const coord = result.geoObjects.get(0).geometry.getCoordinates();
-        setAddress(coord);
+        const coord = result.geoObjects
+          .get(0)
+          .geometry.getCoordinates() as number[];
+        dispatch(updateUserPosition({ center: coord }));
       })
       .catch((error: ErrorType) => {
         console.log(error.message);
@@ -47,8 +49,8 @@ export const MapComponents = () => {
 
   const onClick = async (e: any) => {
     if (!ymapsValue) return;
-    const coords = e.get("coords");
-    setAddress(coords);
+    const coords = e.get("coords") as number[];
+    dispatch(updateUserPosition({ center: coords }));
     const result = await ymapsValue.geocode(coords);
     const object = result.geoObjects.get(0);
     dispatch(
@@ -60,6 +62,7 @@ export const MapComponents = () => {
 
   return (
     <section className="flex justify-end items-end flex-col w-full h-screen map-container">
+      {userGeoPosition.center}
       <SearchDropDownMemo />
       <YMaps
         query={{
@@ -67,11 +70,7 @@ export const MapComponents = () => {
           apikey: process.env.REACT_APP_apiKeyYandex || "",
         }}
       >
-        <Map
-          onLoad={onLoad}
-          onClick={onClick}
-          state={address ? { ...userGeoPosition, ...address } : userGeoPosition}
-        >
+        <Map onLoad={onLoad} onClick={onClick} state={userGeoPosition}>
           <Placemark />
         </Map>
       </YMaps>

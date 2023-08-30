@@ -8,8 +8,6 @@ import { useDispatch } from "react-redux";
 export const SearchDropDown = () => {
   const dispatch = useDispatch();
 
-  const [visible, setVisible] = useState(false);
-  const hiddenDropDown = () => setVisible(true);
   const inputCurrent = createRef<HTMLInputElement>();
   const userValueHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
     dispatch(
@@ -29,7 +27,7 @@ export const SearchDropDown = () => {
 
   return (
     <section className="flex flex-row justify-items-center items-center w-full h-40 pr-1 pl-1">
-      <div className={visible ? "visible w-full" : "visible w-full"}>
+      <div className="w-full">
         <div>
           <label
             htmlFor="small-input"
@@ -40,7 +38,6 @@ export const SearchDropDown = () => {
           <input
             ref={inputCurrent}
             type="text"
-            onFocus={hiddenDropDown}
             onChange={userValueHandler}
             id="small-input"
             className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
