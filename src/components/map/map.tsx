@@ -107,11 +107,11 @@ export const MapComponents = () => {
                   options={{
                     preset: "islands#greenDotIconWithCaption",
                     iconColor: "red",
-                    iconContentLayout: "Адрес не найден",
+                    iconContentLayout: inputError,
                   }}
                   properties={{
-                    hintContent: "Адрес не найден",
-                    balloonContent: "Адрес не найден",
+                    hintContent: inputError,
+                    balloonContent: inputError,
                   }}
                   modules={["geoObject.addon.balloon", "geoObject.addon.hint"]}
                 />

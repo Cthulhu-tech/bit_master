@@ -1,5 +1,6 @@
 import { FakeFetchDataTaxi } from "./redux/taxiPlaceMarket/asyncAction/taxiPlaceMarketAsync";
 import { updatePlaceMarketTaxiLoading } from "./redux/taxiPlaceMarket/taxiPlaceMarket";
+import { updateInputError } from "./redux/inputError/inputError";
 import { useDispatch, useSelector } from "react-redux";
 import { MapComponents } from "./components/map/map";
 import { memo, useState, useEffect } from "react";
@@ -24,6 +25,8 @@ export const App = () => {
   const formHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (inputError || address === userValue) return;
+    if (userValue.length <= 0)
+      return dispatch(updateInputError({ error: "Enter a valid address" }));
     dispatch(updatePlaceMarketTaxiLoading({ loading: true }));
     dispatch(FakeFetchDataTaxi());
   };
