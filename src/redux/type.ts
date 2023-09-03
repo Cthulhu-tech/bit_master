@@ -7,6 +7,7 @@ export interface IStore {
   updatePageInfo: DataPageInfo;
   userPosition: DataStartGeo;
   userValue: UserInput;
+  inputError: UserInputCurrentValueError;
 }
 
 export interface DataStartGeo extends DataPositionGeo {
@@ -20,7 +21,8 @@ export interface DataPositionGeo {
 
 export interface UserInput
   extends UserInputCurrentValue,
-    UserInputCurrentInput {}
+    UserInputCurrentInput,
+    UserInputHiddenDropDown {}
 
 export interface UserInputCurrentInput {
   current: HTMLInputElement | null;
@@ -28,6 +30,14 @@ export interface UserInputCurrentInput {
 
 export interface UserInputCurrentValue {
   value: string;
+}
+
+export interface UserInputHiddenDropDown {
+  hidden: boolean;
+}
+
+export interface UserInputCurrentValueError {
+  error: string;
 }
 
 export type DataPageInfo = {};

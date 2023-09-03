@@ -3,9 +3,10 @@ import {
   UserInput,
   UserInputCurrentInput,
   UserInputCurrentValue,
+  UserInputHiddenDropDown,
 } from "../type";
 
-const defaultState: UserInput = { value: "", current: null };
+const defaultState: UserInput = { value: "", current: null, hidden: true };
 
 const update = "set_user_value";
 const updateCurrent = "set_user_current";
@@ -35,6 +36,11 @@ export const updateUserCurrentInput = (payload: UserInputCurrentInput) => ({
 });
 
 export const updateUserCurrentValue = (payload: UserInputCurrentValue) => ({
+  type: update,
+  payload,
+});
+
+export const updateUserHiddenDropDown = (payload: UserInputHiddenDropDown) => ({
   type: update,
   payload,
 });
