@@ -4,8 +4,11 @@ import {
   updateUserInput,
 } from "../../redux/useInput/userInput";
 import { useDispatch, useSelector } from "react-redux";
-import { createRef, useEffect } from "react";
+import { createRef, useEffect, memo } from "react";
+import { Address } from "../address/address";
 import { IStore } from "../../redux/type";
+
+const AddressMemo = memo(Address);
 
 export const SearchDropDown = () => {
   const dispatch = useDispatch();
@@ -41,18 +44,18 @@ export const SearchDropDown = () => {
   });
 
   return (
-    <section className="flex flex-row justify-items-center items-center w-full h-40 pr-1 pl-1">
-      <div className="w-full flex justify-items-center justify-center items-center content-center">
+    <section className="flex flex-row justify-items-center items-start w-full h-40">
+      <div className="w-full flex flex-row justify-center items-start content-center">
         <div
           className={
             hidden
-              ? "input__wrapper_hide-dropdown w-full flex-col flex justify-items-center justify-center items-center content-center"
-              : "input__wrapper_show-dropdown w-full flex-col flex justify-items-center justify-center items-center content-center"
+              ? "input__wrapper_hide-dropdown flex-col flex justify-items-center justify-center items-start content-center w-2/3 pr-5"
+              : "input__wrapper_show-dropdown flex-col flex justify-items-center justify-center items-start content-center w-2/3 pr-5"
           }
         >
           <label
             htmlFor="small-input"
-            className="block mb-1 mt-1 text-sm font-medium text-gray-900 dark:text-white"
+            className="block mt-10 font-bold text-white dark:text-white"
           >
             Search address
           </label>
@@ -65,8 +68,8 @@ export const SearchDropDown = () => {
             id="small-input"
             className={
               inputError
-                ? "block w-full p-2 mt-5 mb-5 text-gray-900 border border-red-300 rounded-lg bg-red-50 sm:text-xs focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
-                : "block w-full p-2 mt-5 mb-5 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                ? "block w-full p-2 mt-2 mb-2 text-gray-900 border border-red-300 rounded-lg bg-red-50 sm:text-xs focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+                : "block w-full p-2 mt-2 mb-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             }
           />
           <button
@@ -74,12 +77,13 @@ export const SearchDropDown = () => {
             className={
               inputError
                 ? "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                : "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                : "bg-indigo-900 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
             }
           >
             Search Taxi
           </button>
         </div>
+        <AddressMemo />
       </div>
     </section>
   );
