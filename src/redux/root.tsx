@@ -1,4 +1,6 @@
 import { combineReducers, createStore, applyMiddleware, Action } from "redux";
+import { orderTaxiInfo } from "./taxiOrderInfo/taxiOrderInfo";
+import { orderTaxi } from "./createTaxiOrder/createTaxiOrder";
 import { taxiInfo } from "./taxiPlaceMarket/taxiPlaceMarket";
 import { userPosition } from "./userPosition/userPosition";
 import { inputError } from "./inputError/inputError";
@@ -12,6 +14,8 @@ export const rootReducer = combineReducers({
   userValue,
   inputError,
   taxiInfo,
+  orderTaxi,
+  orderTaxiInfo,
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));

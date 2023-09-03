@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { createRef, useEffect, memo } from "react";
 import { Address } from "../address/address";
 import { IStore } from "../../redux/type";
-import { deletePlaceMarketTaxi } from "../../redux/taxiPlaceMarket/taxiPlaceMarket";
 
 const AddressMemo = memo(Address);
 

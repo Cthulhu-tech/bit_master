@@ -5,7 +5,12 @@ import {
 } from "../../redux/taxiPlaceMarket/taxiPlaceMarket";
 import { updateUserPosition } from "../../redux/userPosition/userPosition";
 import { updateInputError } from "../../redux/inputError/inputError";
-import { DataStartGeo, IStore, UserInput } from "../../redux/type";
+import {
+  DataStartGeo,
+  IStore,
+  RootCrewsInfo,
+  UserInput,
+} from "../../redux/type";
 import { SearchDropDown } from "../searchDropDown/searchDropDown";
 import { ValidateInputUser } from "../../utils/validate/validate";
 import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
@@ -32,11 +37,15 @@ export const MapComponents = () => {
   const inputError = useSelector<IStore, string>(
     (store) => store.inputError.error
   );
+  const taxiInfo = useSelector<IStore, RootCrewsInfo>(
+    (store) => store.taxiInfo
+  );
   const userValue = useSelector<IStore, UserInput>((store) => store.userValue);
   const onClickAddress = (e: any, api: typeof ymaps) => {
     const valueSearch = e.get("item").value;
     if (!ValidateInputUser(valueSearch, dispatch, updateInputError))
       return dispatch(updateUserCurrentValue({ value: "" }));
+    dispatch(deletePlaceMarketTaxi());
     api
       .geocode(valueSearch)
       .then((result: any) => {
@@ -60,6 +69,7 @@ export const MapComponents = () => {
   };
   const onClick = async (e: any) => {
     if (!ymapsValue) return;
+    dispatch(deletePlaceMarketTaxi());
     dispatch(updateUserHiddenDropDown({ hidden: true }));
     const coords = e.get("coords") as number[];
     dispatch(updateUserPosition({ center: coords }));
@@ -67,7 +77,6 @@ export const MapComponents = () => {
     const object = result.geoObjects.get(0);
     const addressLine = (object as any).getAddressLine();
     if (!ValidateInputUser(addressLine, dispatch, updateInputError)) {
-      dispatch(deletePlaceMarketTaxi());
       dispatch(
         updateUserCurrentValue({
           value: "",
@@ -75,7 +84,7 @@ export const MapComponents = () => {
       );
     } else {
       dispatch(updatePlaceMarketTaxiLoading({ loading: true }));
-      dispatch(FakeFetchDataTaxi());
+      dispatch(FakeFetchDataTaxi(userGeoPosition.center, userValue.value));
       dispatch(
         updateUserCurrentValue({
           value: addressLine,
@@ -129,6 +138,26 @@ export const MapComponents = () => {
                   modules={["geoObject.addon.balloon", "geoObject.addon.hint"]}
                 />
               )}
+              {taxiInfo.code !== 0 &&
+                taxiInfo.data.crews_info.map((carMark) => (
+                  <Placemark
+                    key={carMark.crew_id}
+                    geometry={[carMark.lat, carMark.lon]}
+                    options={{
+                      preset: "islands#greenDotIconWithCaption",
+                      iconColor: "green",
+                    }}
+                    properties={{
+                      hintContent: carMark.car_model + " " + carMark.car_number,
+                      balloonContent:
+                        carMark.car_model + " " + carMark.car_number,
+                    }}
+                    modules={[
+                      "geoObject.addon.balloon",
+                      "geoObject.addon.hint",
+                    ]}
+                  />
+                ))}
             </Map>
           </YMaps>
         </article>

@@ -1,3 +1,5 @@
+import { CreateTaxiData } from "./createTaxiOrder/type";
+
 export interface IAction<T, P> {
   readonly type: T;
   readonly payload: P;
@@ -9,11 +11,22 @@ export interface IStore {
   readonly userValue: UserInput;
   readonly inputError: UserInputCurrentValueError;
   readonly taxiInfo: RootCrewsInfo;
+  readonly orderTaxi: CreateTaxiData;
+  readonly orderTaxiInfo: OrderDataTaxiInfo;
 }
 
 export interface DataStartGeo extends DataPositionGeo {
   zoom: number;
   controls: string[];
+}
+
+export interface OrderDataTaxiInfo extends Description, Loading {
+  code: number;
+  data: OrderDataTaxiInfoData[];
+}
+
+export interface OrderDataTaxiInfoData {
+  oreder_id: number;
 }
 
 export interface DataPositionGeo {
@@ -41,11 +54,17 @@ export interface UserInputCurrentValueError {
   error: string;
 }
 
-export interface RootCrewsInfo {
+export interface RootCrewsInfo extends Description, Loading {
   code: number;
-  descr: string;
   data: DataCrewsInfo;
+}
+
+export interface Loading {
   loading: boolean;
+}
+
+export interface Description {
+  descr: string;
 }
 
 export interface DataCrewsInfo {

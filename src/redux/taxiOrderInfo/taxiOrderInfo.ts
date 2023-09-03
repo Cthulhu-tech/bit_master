@@ -12,6 +12,7 @@ const defaultState: OrderDataTaxiInfo = {
 };
 
 const update = "set_taxi_info_order";
+const deleteOrder = "delete_taxi_info_order";
 
 export const orderTaxiInfo = (
   state = defaultState,
@@ -20,6 +21,8 @@ export const orderTaxiInfo = (
   switch (action.type) {
     case update:
       return { ...state, ...action.payload };
+    case deleteOrder:
+      return { ...defaultState };
     default:
       return state;
   }
@@ -29,6 +32,12 @@ export const setOrderTaxiData = (payload: OrderDataTaxiInfo) => {
   return {
     type: update,
     payload,
+  };
+};
+
+export const deleteOrderTaxiData = () => {
+  return {
+    type: deleteOrder,
   };
 };
 
