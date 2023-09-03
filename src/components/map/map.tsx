@@ -8,8 +8,13 @@ import ymaps from "yandex-maps";
 import "./map.css";
 
 import { ErrorType } from "./type";
-import { updateUserCurrentValue } from "../../redux/useInput/userInput";
 import { updateUserPosition } from "../../redux/userPosition/userPosition";
+import {
+  updateUserCurrentValue,
+  updateUserHiddenDropDown,
+} from "../../redux/useInput/userInput";
+import { updateInputError } from "../../redux/inputError/inputError";
+import { ValidateInputUser } from "../../utils/validate";
 
 const SearchDropDownMemo = memo(SearchDropDown);
 
@@ -24,7 +29,8 @@ export const MapComponents = () => {
 
   const onClickAddress = (e: any, api: typeof ymaps) => {
     const valueSearch = e.get("item").value;
-    dispatch(updateUserCurrentValue({ value: valueSearch }));
+    if (!ValidateInputUser(valueSearch, dispatch, updateInputError))
+      return dispatch(updateUserCurrentValue({ value: "" }));
     api
       .geocode(valueSearch)
       .then((result: any) => {
@@ -49,31 +55,57 @@ export const MapComponents = () => {
 
   const onClick = async (e: any) => {
     if (!ymapsValue) return;
+    dispatch(updateUserHiddenDropDown({ hidden: true }));
     const coords = e.get("coords") as number[];
     dispatch(updateUserPosition({ center: coords }));
     const result = await ymapsValue.geocode(coords);
     const object = result.geoObjects.get(0);
-    dispatch(
-      updateUserCurrentValue({
-        value: (object as any).getAddressLine(),
-      })
-    );
+    const userValue = (object as any).getAddressLine();
+    console.log(userValue);
+    if (!ValidateInputUser(userValue, dispatch, updateInputError))
+      dispatch(
+        updateUserCurrentValue({
+          value: "",
+        })
+      );
+    else
+      dispatch(
+        updateUserCurrentValue({
+          value: userValue,
+        })
+      );
   };
 
   return (
-    <section className="flex justify-end items-end flex-col w-full h-screen map-container">
-      {userGeoPosition.center}
+    <section className="flex justify-end items-end flex-col w-full h-screen">
       <SearchDropDownMemo />
-      <YMaps
-        query={{
-          load: "package.full",
-          apikey: process.env.REACT_APP_apiKeyYandex || "",
-        }}
-      >
-        <Map onLoad={onLoad} onClick={onClick} state={userGeoPosition}>
-          <Placemark />
-        </Map>
-      </YMaps>
+      <div className="h-screen w-full flex pt-5">
+        <article className="w-2/3 map-container">
+          <YMaps
+            query={{
+              load: "package.full",
+              apikey: process.env.REACT_APP_apiKeyYandex || "",
+            }}
+          >
+            <Map
+              onLoad={onLoad}
+              onClick={onClick}
+              width={"100%"}
+              height={"100%"}
+              state={userGeoPosition}
+            >
+              <Placemark
+                geometry={userGeoPosition.center}
+                options={{
+                  preset: "islands#greenDotIconWithCaption",
+                  iconColor: "yellow",
+                }}
+              />
+            </Map>
+          </YMaps>
+        </article>
+        <article className="w-1/3"></article>
+      </div>
     </section>
   );
 };
