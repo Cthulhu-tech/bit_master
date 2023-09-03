@@ -5,18 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { memo, useState } from "react";
 import ymaps from "yandex-maps";
 
-import "./map.css";
-
-import { ErrorType } from "./type";
 import { updateUserPosition } from "../../redux/userPosition/userPosition";
+import { updateInputError } from "../../redux/inputError/inputError";
+import { ValidateInputUser } from "../../utils/validate";
 import {
   updateUserCurrentValue,
   updateUserHiddenDropDown,
 } from "../../redux/useInput/userInput";
-import { updateInputError } from "../../redux/inputError/inputError";
-import { ValidateInputUser } from "../../utils/validate";
+import { Cars } from "../cars/cars";
+import { ErrorType } from "./type";
+import "./map.css";
 
 const SearchDropDownMemo = memo(SearchDropDown);
+const CarsMemo = memo(Cars);
 
 export const MapComponents = () => {
   const dispatch = useDispatch();
@@ -24,9 +25,7 @@ export const MapComponents = () => {
   const userGeoPosition = useSelector<IStore, DataStartGeo>(
     (store) => store.userPosition
   );
-
   const userValue = useSelector<IStore, UserInput>((store) => store.userValue);
-
   const onClickAddress = (e: any, api: typeof ymaps) => {
     const valueSearch = e.get("item").value;
     if (!ValidateInputUser(valueSearch, dispatch, updateInputError))
@@ -43,7 +42,6 @@ export const MapComponents = () => {
         console.log(error.message);
       });
   };
-
   const onLoad = (api: typeof ymaps) => {
     if (!userValue.current) return;
     setYmaps(api);
@@ -52,7 +50,6 @@ export const MapComponents = () => {
       return onClickAddress(e, api);
     });
   };
-
   const onClick = async (e: any) => {
     if (!ymapsValue) return;
     dispatch(updateUserHiddenDropDown({ hidden: true }));
@@ -79,7 +76,7 @@ export const MapComponents = () => {
   return (
     <section className="flex justify-end items-end flex-col w-full h-screen">
       <SearchDropDownMemo />
-      <div className="h-screen w-full flex pt-5">
+      <div className="h-screen w-full flex">
         <article className="w-2/3 map-container">
           <YMaps
             query={{
@@ -104,7 +101,7 @@ export const MapComponents = () => {
             </Map>
           </YMaps>
         </article>
-        <article className="w-1/3"></article>
+        <CarsMemo />
       </div>
     </section>
   );
