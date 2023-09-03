@@ -37,6 +37,7 @@ export const MapComponents = () => {
           .get(0)
           .geometry.getCoordinates() as number[];
         dispatch(updateUserPosition({ center: coord }));
+        dispatch(updateUserCurrentValue({ value: valueSearch }));
       })
       .catch((error: ErrorType) => {
         console.log(error.message);
@@ -57,9 +58,8 @@ export const MapComponents = () => {
     dispatch(updateUserPosition({ center: coords }));
     const result = await ymapsValue.geocode(coords);
     const object = result.geoObjects.get(0);
-    const userValue = (object as any).getAddressLine();
-    console.log(userValue);
-    if (!ValidateInputUser(userValue, dispatch, updateInputError))
+    const addressLine = (object as any).getAddressLine();
+    if (!ValidateInputUser(addressLine, dispatch, updateInputError))
       dispatch(
         updateUserCurrentValue({
           value: "",
@@ -68,7 +68,7 @@ export const MapComponents = () => {
     else
       dispatch(
         updateUserCurrentValue({
-          value: userValue,
+          value: addressLine,
         })
       );
   };

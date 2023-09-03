@@ -11,7 +11,7 @@ export const Address = () => {
         <span className="block font-bold text-slate-900 uppercase text-center">
           where are we picking you from
         </span>
-        <div className="flex flex-col align-items-center h-full justify-content-center">
+        <div className="flex flex-col align-items-center h-full justify-content-center justify-center">
           <span className="block font-bold text-slate-500 uppercase text-center">
             {userValue}
           </span>
