@@ -1,19 +1,23 @@
-import { DataStartGeo, IStore, UserInput } from "../../redux/type";
-import { SearchDropDown } from "../searchDropDown/searchDropDown";
-import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
-import { useDispatch, useSelector } from "react-redux";
-import { memo, useState } from "react";
-import ymaps from "yandex-maps";
-
+import { FakeFetchDataTaxi } from "../../redux/taxiPlaceMarket/asyncAction/taxiPlaceMarketAsync";
+import {
+  deletePlaceMarketTaxi,
+  updatePlaceMarketTaxiLoading,
+} from "../../redux/taxiPlaceMarket/taxiPlaceMarket";
 import { updateUserPosition } from "../../redux/userPosition/userPosition";
 import { updateInputError } from "../../redux/inputError/inputError";
-import { ValidateInputUser } from "../../utils/validate";
+import { DataStartGeo, IStore, UserInput } from "../../redux/type";
+import { SearchDropDown } from "../searchDropDown/searchDropDown";
+import { ValidateInputUser } from "../../utils/validate/validate";
+import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
+import { useDispatch, useSelector } from "react-redux";
 import {
   updateUserCurrentValue,
   updateUserHiddenDropDown,
 } from "../../redux/useInput/userInput";
+import { memo, useState } from "react";
 import { Cars } from "../cars/cars";
 import { ErrorType } from "./type";
+import ymaps from "yandex-maps";
 import "./map.css";
 
 const SearchDropDownMemo = memo(SearchDropDown);
@@ -24,6 +28,9 @@ export const MapComponents = () => {
   const [ymapsValue, setYmaps] = useState<typeof ymaps>();
   const userGeoPosition = useSelector<IStore, DataStartGeo>(
     (store) => store.userPosition
+  );
+  const inputError = useSelector<IStore, string>(
+    (store) => store.inputError.error
   );
   const userValue = useSelector<IStore, UserInput>((store) => store.userValue);
   const onClickAddress = (e: any, api: typeof ymaps) => {
@@ -59,24 +66,27 @@ export const MapComponents = () => {
     const result = await ymapsValue.geocode(coords);
     const object = result.geoObjects.get(0);
     const addressLine = (object as any).getAddressLine();
-    if (!ValidateInputUser(addressLine, dispatch, updateInputError))
+    if (!ValidateInputUser(addressLine, dispatch, updateInputError)) {
+      dispatch(deletePlaceMarketTaxi());
       dispatch(
         updateUserCurrentValue({
           value: "",
         })
       );
-    else
+    } else {
+      dispatch(updatePlaceMarketTaxiLoading({ loading: true }));
+      dispatch(FakeFetchDataTaxi());
       dispatch(
         updateUserCurrentValue({
           value: addressLine,
         })
       );
+    }
   };
-
   return (
     <section className="flex justify-end items-end flex-col w-full h-screen">
       <SearchDropDownMemo />
-      <div className="h-screen w-full flex">
+      <div className="h-screen w-full flex overflow-hidden">
         <article className="w-2/3 map-container">
           <YMaps
             query={{
@@ -91,13 +101,34 @@ export const MapComponents = () => {
               height={"100%"}
               state={userGeoPosition}
             >
-              <Placemark
-                geometry={userGeoPosition.center}
-                options={{
-                  preset: "islands#greenDotIconWithCaption",
-                  iconColor: "yellow",
-                }}
-              />
+              {inputError ? (
+                <Placemark
+                  geometry={userGeoPosition.center}
+                  options={{
+                    preset: "islands#greenDotIconWithCaption",
+                    iconColor: "red",
+                    iconContentLayout: "Адрес не найден",
+                  }}
+                  properties={{
+                    hintContent: "Адрес не найден",
+                    balloonContent: "Адрес не найден",
+                  }}
+                  modules={["geoObject.addon.balloon", "geoObject.addon.hint"]}
+                />
+              ) : (
+                <Placemark
+                  geometry={userGeoPosition.center}
+                  options={{
+                    preset: "islands#greenDotIconWithCaption",
+                    iconColor: "yellow",
+                  }}
+                  properties={{
+                    hintContent: userValue.value,
+                    balloonContent: userValue.value,
+                  }}
+                  modules={["geoObject.addon.balloon", "geoObject.addon.hint"]}
+                />
+              )}
             </Map>
           </YMaps>
         </article>

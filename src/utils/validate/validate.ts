@@ -1,5 +1,5 @@
 import { AnyAction, Dispatch } from "redux";
-import { Callback } from "./type";
+import { Callback } from "../type";
 
 export const ValidateInputUser = (
   userValue: string,

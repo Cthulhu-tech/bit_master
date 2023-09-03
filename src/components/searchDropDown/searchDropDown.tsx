@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createRef, useEffect, memo } from "react";
 import { Address } from "../address/address";
 import { IStore } from "../../redux/type";
+import { deletePlaceMarketTaxi } from "../../redux/taxiPlaceMarket/taxiPlaceMarket";
 
 const AddressMemo = memo(Address);
 
@@ -20,6 +21,9 @@ export const SearchDropDown = () => {
   );
   const hidden = useSelector<IStore, boolean>(
     (store) => store.userValue.hidden
+  );
+  const loading = useSelector<IStore, boolean>(
+    (store) => store.taxiInfo.loading
   );
   const inputCurrent = createRef<HTMLInputElement>();
   const userValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,13 +78,16 @@ export const SearchDropDown = () => {
           />
           <button
             type="submit"
+            disabled={loading}
             className={
               inputError
                 ? "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                : loading
+                ? "bg-slate-200 hover:bg-slate-100 text-white font-bold py-2 px-4 rounded"
                 : "bg-indigo-900 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
             }
           >
-            Search Taxi
+            {loading ? "Plece wait" : "Search Taxi"}
           </button>
         </div>
         <AddressMemo />
